@@ -119,7 +119,7 @@ export async function fetchInvoicesPages(query: string) {
   return totalPages;
 }
 
-export async function fetchInvoiceById(id: string) {
+export async function fetchInvoiceById(id: string): Promise<InvoiceForm> {
   const data = await prisma.invoice.findMany({
     where: {
       id: id
@@ -128,6 +128,7 @@ export async function fetchInvoiceById(id: string) {
 
   const invoice = data.map((invoice) => ({
     ...invoice,
+    status: invoice.status as 'pending' | 'paid',
     amount: invoice.amount / 100
   }));
 
