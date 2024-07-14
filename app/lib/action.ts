@@ -44,11 +44,18 @@ export async function createInvoice(formData: FormData) {
 }
 
 export async function deleteInvoice(id: string) {
-  await prisma.invoice.delete({
-    where: {
-      id: id,
+  try {
+    await prisma.invoice.delete({
+      where: {
+        id: id,
+      }
+    })
+  } catch (error) {
+    return {
+      message: 'Database error: Failed to delete invoice'
     }
-  })
+  }
+
   revalidatePath('/dashboard/invoices');
 }
 
@@ -63,16 +70,22 @@ export async function updateInvoice(id: string, formData: FormData) {
  
   const amountInCents = amount * 100;
  
-  await prisma.invoice.update({
-    where: {
-      id: id,
-    },
-    data: {
-      customer_id: customerId,
-      amount: amountInCents,
-      status: status,
+  try {
+    await prisma.invoice.update({
+      where: {
+        id: id,
+      },
+      data: {
+        customer_id: customerId,
+        amount: amountInCents,
+        status: status,
+      }
+    })
+  } catch (error) {
+    return {
+      message: 'Database error: Failed to update invoice'
     }
-  })
+  }
  
   revalidatePath('/dashboard/invoices');
   redirect('/dashboard/invoices');
