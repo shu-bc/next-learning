@@ -37,3 +37,12 @@ export async function createInvoice(formData: FormData) {
   redirect('/dashboard/invoices');
 }
 
+export async function deleteInvoice(id: string) {
+  await prisma.invoice.delete({
+    where: {
+      id: id,
+    }
+  })
+  revalidatePath('/dashboard/invoices');
+}
+
