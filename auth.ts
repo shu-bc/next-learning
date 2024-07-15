@@ -3,7 +3,6 @@ import { authConfig } from './auth.config';
 import Credentials from 'next-auth/providers/credentials';
 import { z } from 'zod';
 import type { User } from '@/app/lib/definitions';
-import bcrypt from 'bcrypt';
 import { prisma } from './app/lib/prisma';
 
 async function getUser(email: string): Promise<User | undefined> {
@@ -34,7 +33,7 @@ export const { auth, signIn, signOut } = NextAuth({
           const user = await getUser(email);
           if (!user) return null;
 
-          const passwordsMatch = await bcrypt.compare(password, user.password);
+          const passwordsMatch = password === user.password
           if (passwordsMatch) return user;
         }
 
